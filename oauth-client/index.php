@@ -5,6 +5,9 @@ const FBCLIENT_ID = "313096147158775";
 const FBCLIENT_SECRET = "c4ac86c990ffd48b3322d3734ec4ed1a";
 const TWITCH_CLIENTID = "30xirglymud2jdnmojkpt3abeyjdtj";
 const TWITCH_SECRET = "96a6b1kkpgckwzyzdb8a6rm1okec2b";
+const PAYPALCLIENT_ID = "AYXRwX1gkkJo_eB91tuJGgceVtyrmCJ6duoUoPxDB3Tf79mX7Q_y9rRzeCmfniKP5ojdgS_P8M41pYC7";
+const PAYPALCLIENT_SECRET = "EGwUyo81he6kO9UZ5Ywi1wXdPn6AFF8te_mVBwr7oFYmskQhnbl1AOBD_oBIa97opPEQLIJKYvpp2J4e";
+
 
 function getUser($params)
 {
@@ -128,6 +131,26 @@ function getTwitchUser($params)
 
 }
 
+function getPaypalUser($params)
+{
+    $result = file_get_contents("https://api-m.sandbox.paypal.com/v1/oauth2/token"
+        . "redirect_uri=https://localhost/paypal-success"
+        . "&client_id=" . PAYPALCLIENT_ID
+        . "&client_secret=" . PAYPALCLIENT_SECRET
+        . "&" . http_build_query($params));
+    $token = json_decode($result, true)["access_token"];
+    // GET USER by TOKEN
+    $context = stream_context_create([
+        'http' => [
+            'method' => "GET",
+            'header' => "Authorization: Bearer " . $token
+        ]
+    ]);
+    $result = file_get_contents("https://api-m.sandbox.paypal.com", false, $context);
+    $user = json_decode($result, true);
+    var_dump($user);
+}
+
 /**
  * AUTH_CODE WORKFLOW
  *  => Get CODE
@@ -158,9 +181,12 @@ switch ($route) {
     . "&scope=email&state=dsdsfsfds'> Login with facebook</a>";
     echo "<br><a href='https://id.twitch.tv/oauth2/authorize?"
     . "client_id=" . TWITCH_CLIENTID . "&redirect_uri=https://localhost/twitch-success&response_type=code&scope=viewing_activity_read&state=c3ab8aa609ea11e793ae92361f002671'> Login with twitch <img src='img/Logo-Twitch.jpg'></img></a>";
-
-    
-
+    break;
+    echo "<a href='https://api-m.sandbox.paypal.com/dialog/oauth?"
+        . "response_type=code"
+        . "&client_id=" . PAYPALCLIENT_ID
+        . "&redirect_uri=https://localhost/paypal-success"
+        . "&scope=email&state=dsdsfsfds'>Login with paypal</a>";
     break;
     case '/success':
         // GET CODE
@@ -185,6 +211,15 @@ switch ($route) {
     getTwitchUser([
         "grant_type" => "authorization_code",
         "code" => $code
+    ]);
+    break;
+    case '/paypal-success':
+        // GET CODE
+        ["code" => $code, "state" => $state] = $_GET;
+        // ECHANGE CODE => TOKEN
+        getPaypalUser([
+            "grant_type" => "authorization_code",
+            "code" => $code
     ]);
     break;
 
