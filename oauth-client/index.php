@@ -181,7 +181,7 @@ switch ($route) {
     . "&scope=email&state=dsdsfsfds'> Login with facebook</a>";
     echo "<br><a href='https://id.twitch.tv/oauth2/authorize?"
     . "client_id=" . TWITCH_CLIENTID . "&redirect_uri=https://localhost/twitch-success&response_type=code&scope=viewing_activity_read&state=c3ab8aa609ea11e793ae92361f002671'> Login with twitch <img src='img/Logo-Twitch.jpg'></img></a>";
-    break;
+
     echo "<a href='https://api-m.sandbox.paypal.com/dialog/oauth?"
         . "response_type=code"
         . "&client_id=" . PAYPALCLIENT_ID
