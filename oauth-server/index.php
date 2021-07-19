@@ -196,27 +196,27 @@ function api()
 $route = strtok($_SERVER['REQUEST_URI'], '?');
 switch ($route) {
     case '/register':
-        register();
-        break;
+    register();
+    break;
     case '/auth':
-        auth();
-        break;
+    auth();
+    break;
     case '/auth-Oui':
-        handleAuth(true);
-        break;
+    handleAuth(true);
+    break;
     case '/auth-Non':
-        handleAuth(false);
-        break;
+    handleAuth(false);
+    break;
     case '/token':
-        token();
-        break;
+    token();
+    break;
     case '/api':
-        api();
-        break;
+    api();
+    break;
     case "/fixtures":
-        fixtures();
-        break;
+    fixtures();
+    break;
     default:
-        echo 'not_found';
-        break;
+    echo 'not_found';
+    break;
 }
